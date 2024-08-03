@@ -1,0 +1,114 @@
+<div v-for="i in row" :key="i">
+  <div v-for="j in col" :key="j">
+    {{ `Outer: ${i}, Inner: ${j}` }}
+    {{ `result: ${i*j}` }}
+    {{ books.data[(i*j) - 1].title }}
+  </div>
+</div>
+
+
+<template>
+  <div v-if="isOpen" class="fixed inset-0 flex items-center justify-center z-50">
+    <div>asdf</div>
+
+    <div class="absolute inset-0 bg-gray-900 opacity-50"></div>
+    <div  class="bg-white p-6 rounded-lg shadow-md w-[50%] border-2 opacity-100">
+      <!-- :style="{ width: popupWidth }" -->
+      <!-- Your popup content goes here -->
+      <!-- <slot></slot> -->
+      <div>
+        <p>Hello bro</p>
+      </div>
+      <button @click="close" class="mt-4 px-4 py-2 bg-gray-800 text-white rounded-md">
+        Close
+      </button>
+    </div>
+  </div>
+</template>
+
+
+
+checkout(paymentFromChile) {
+      // alert(paymentFromChile.paymentMethodId);
+      var url = `${process.env.API_URL}/api/orders`;
+
+      var user = local.get('currectUser')
+      var customerId = user.id
+
+      var shippingCompany = local.get('shippingCompany')
+      const paymentMethodId = paymentFromChile.paymentMethodId
+      const payment = paymentFromChile.payment
+
+      var shippingAddress = local.get('shipping')
+      var orderDetails = local.get('Cart')
+      var totalPrice = 0
+      for (let ele of orderDetails) {
+        totalPrice += ele.totalPrice
+      }
+      var priceAfterDiscount = totalPrice
+
+      console.log(JSON.stringify({ customerId, shippingCompany, shippingAddress, paymentMethodId, payment, orderDetails, totalPrice, priceAfterDiscount }));
+      fetch(url, {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ customerId, shippingCompany, shippingAddress, paymentMethodId, payment, orderDetails, totalPrice, priceAfterDiscount })
+      }).then(
+        async res => {
+          console.log(res.status)
+          if (res.status >= 300 || res.status < 200) {
+            const data = await res.json();
+            // this.errorLogin = data.message
+            // console.log(data);
+          } else {
+            const data = await res.json();
+            console.log(data);
+            // this.clearCheckoutInLocal()
+            this.showPopup = true
+            this.checkoutStore.setAlreadyPaid(true)
+          }
+        }
+      )
+    },
+
+
+
+    // about
+ <!-- header -->
+    <div class="xl:flex justify-between pt-24 py-12 items-start border-b-2 mb-12">
+      <div class="w-full xl:w-1/2 text-center xl:text-left 2xl:pt-8 ">
+        <h1 class="text-[2rem] font-semibold pb-4 ">About Us</h1>
+        <h1 class="text-[1.2rem] tracking-widest font-medium">Empowering Cambodian Teens to Read More</h1>
+        <p class="pt-6 text-gray-500">
+          At D-double-K Bookstore, our story began with a passion for books and a deep-rooted desire to make a positive
+          impact on the lives of young readers. The idea for this ecommerce bookstore sprouted from a personal experience
+          that ignited our love for literature. We realized that books possess the power to transform minds, inspire
+          creativity, and pave the way for a brighter future.
+        </p>
+      </div>
+      <div class="hidden w-full xl:w-1/2 lg:flex xl:justify-end pt-8 xl:pt-0 justify-center">
+        <img src="https://c1.wallpaperflare.com/preview/821/335/782/book-reading-hand-legs.jpg" alt=""
+          class="w-[400px] border-2 rounded-[24px] shadow-2xl  xl:w-[80%]">
+      </div>
+    </div>
+    <!-- end header -->
+
+    <div class="lg:flex flex-wrap justify-center gap-12 lg:w-full w-[100%] mx-auto">
+      <center v-for="card in cards" :key="card">
+        <card class="mb-14 2sm:w-[380px] w-full" 
+          :title="card.title" :text="card.text" :imgPath="card.imgPath"
+        />
+      </center>
+    </div>
+
+    <center class="py-12 text-gray-500">
+
+// div
+    <div class="w-[95%] 2sm:w-[80%] mx-auto">
+
+   
+  </div>
+
+    </center>
